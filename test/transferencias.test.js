@@ -7,9 +7,12 @@ const { getToken } = require('../helpers/authentication.js');
 
 describe('Transferências', () => {
     describe('POST /transferencias', () => {
-        it('Should return success with 201 when transfer amount is greater than or equal to $10.00', async () => {
-            const token = await getToken('julio.lima', '123456');
+        let token;
+        beforeEach(async () => {
+            token = await getToken('julio.lima', '123456');
+        });
 
+        it('Should return success with 201 when transfer amount is greater than or equal to $10.00', async () => {
             const response = await request(process.env.BASE_URL)
                 .post('/transferencias')
                 .set('Content-Type', 'application/json')
@@ -21,13 +24,11 @@ describe('Transferências', () => {
                     token: ""
                 });
 
-                expect(response.status).to.equal(201);
+            expect(response.status).to.equal(201);
         });
 
         it('Should return failure with 422 when transfer amount is less than $10.00', async () => {
-            const token = await getToken('julio.lima', '123456');
-
-            const response = await request('http://localhost:3000')
+            const response = await request(process.env.BASE_URL)
                 .post('/transferencias')
                 .set('Content-Type', 'application/json')
                 .set('Authorization', `Bearer ${token}`)
